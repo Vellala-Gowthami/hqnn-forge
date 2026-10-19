@@ -358,9 +358,18 @@ class TestValidation:
         "kwargs, match",
         [
             (dict(monitor="auc"), "unknown monitor"),
-            (dict(max_epochs=0), "max_epochs must be"),
-            (dict(batch_size=0), "batch_size must be"),
-            (dict(patience=0), "patience must be"),
+            (dict(max_epochs=0), "max_epochs"),
+            (dict(batch_size=0), "batch_size"),
+            (dict(patience=0), "patience"),
+            (dict(max_epochs=float("nan")), "max_epochs"),
+            (dict(max_epochs=10.0), "max_epochs"),
+            (dict(max_epochs=True), "max_epochs"),
+            (dict(batch_size=float("nan")), "batch_size"),
+            (dict(batch_size=8.0), "batch_size"),
+            (dict(batch_size=True), "batch_size"),
+            (dict(patience=float("nan")), "patience"),
+            (dict(patience=5.0), "patience"),
+            (dict(patience=True), "patience"),
         ],
     )
     def test_bad_arguments(self, kwargs: dict, match: str, data: tuple[torch.Tensor, ...]) -> None:
