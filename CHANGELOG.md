@@ -534,7 +534,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the same way (#651)
 
 ### Fixed
+<<<<<<< HEAD
 - `train_model` validates `max_epochs`, `batch_size`, and `patience` in `train_model`, rejecting booleans, non-integer values, and counts below one. (#632)
+=======
+<<<<<<< HEAD
+- Validate `max_epochs`, `batch_size`, and `patience` in `train_model`, rejecting booleans, non-integer values, and counts below one. (#632)
+=======
+- Validate `max_epochs`, `batch_size`, and `patience` in `train_model`, rejecting booleans,
+  non-integer values, and counts below one. (#632)
+>>>>>>> 8dc0aeb (docs: add PR number to train_model changelog entry)
+- Circuit diagnostics (`circuit_summary`, `draw_circuit`, `count_inert_parameters`) no
+  longer fail on PennyLane 0.46 development builds, where `qml.transforms.decompose` stopped
+  accepting a tape (#623)
+>>>>>>> 88c7343 (docs: add PR number to train_model changelog entry)
 - `examples/does_the_quantum_layer_help.py` now reuses the rounding-aware
   feature standardisation so near-constant columns are centred rather than
   incorrectly scaled to unit variance (#604)
