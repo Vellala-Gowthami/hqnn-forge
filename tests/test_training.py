@@ -355,21 +355,21 @@ class TestDivergence:
 
 class TestValidation:
     @pytest.mark.parametrize(
-        "kwargs, match",
+        "kwargs, match",        
         [
             (dict(monitor="auc"), "unknown monitor"),
-            (dict(max_epochs=0), "max_epochs"),
-            (dict(batch_size=0), "batch_size"),
-            (dict(patience=0), "patience"),
-            (dict(max_epochs=float("nan")), "max_epochs"),
-            (dict(max_epochs=10.0), "max_epochs"),
-            (dict(max_epochs=True), "max_epochs"),
-            (dict(batch_size=float("nan")), "batch_size"),
-            (dict(batch_size=8.0), "batch_size"),
-            (dict(batch_size=True), "batch_size"),
-            (dict(patience=float("nan")), "patience"),
-            (dict(patience=5.0), "patience"),
-            (dict(patience=True), "patience"),
+            (dict(max_epochs=0), r"max_epochs must be >= 1.*0"),
+            (dict(batch_size=0), r"batch_size must be >= 1.*0"),
+            (dict(patience=0), r"patience must be >= 1.*0"),
+            (dict(max_epochs=float("nan")), r"max_epochs must be.*nan"),
+            (dict(max_epochs=10.0), r"max_epochs must be.*10\.0"),
+            (dict(max_epochs=True), r"max_epochs must be.*True"),
+            (dict(batch_size=float("nan")), r"batch_size must be.*nan"),
+            (dict(batch_size=8.0), r"batch_size must be.*8\.0"),
+            (dict(batch_size=True), r"batch_size must be.*True"),
+            (dict(patience=float("nan")), r"patience must be.*nan"),
+            (dict(patience=2.5), r"patience must be.*2\.5"),
+            (dict(patience=True), r"patience must be.*True"),
         ],
     )
     def test_bad_arguments(self, kwargs: dict, match: str, data: tuple[torch.Tensor, ...]) -> None:
