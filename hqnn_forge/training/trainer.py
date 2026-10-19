@@ -38,7 +38,7 @@ import math
 import operator
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import cast
+from typing import SupportsIndex, cast
 
 import torch
 import torch.nn as nn
@@ -179,9 +179,11 @@ def _check_count(name: str, value: object, *, none_ok: bool = False) -> None:
         return
     suffix = " or None" if none_ok else ""
     if isinstance(value, bool):
-        raise ValueError(f"{name} must be an int >= 1{suffix}, not a bool; got {value!r}.")
+        raise ValueError(   # noqa: TRY004
+            f"{name} must be an int >= 1{suffix}, not a bool; got {value!r}."
+        )
     try:
-        count = operator.index(value)  # type: ignore[call-overload]
+        count = operator.index(cast(SupportsIndex, value))
     except TypeError:
         raise ValueError(f"{name} must be an int >= 1{suffix}; got {value!r}.") from None
     if count < 1:
