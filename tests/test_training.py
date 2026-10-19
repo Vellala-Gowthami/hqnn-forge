@@ -355,7 +355,7 @@ class TestDivergence:
 
 class TestValidation:
     @pytest.mark.parametrize(
-        "kwargs, match",        
+        "kwargs, match",
         [
             (dict(monitor="auc"), "unknown monitor"),
             (dict(max_epochs=0), r"max_epochs must be >= 1.*0"),

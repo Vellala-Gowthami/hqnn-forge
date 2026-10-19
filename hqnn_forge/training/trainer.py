@@ -179,7 +179,7 @@ def _check_count(name: str, value: object, *, none_ok: bool = False) -> None:
         return
     suffix = " or None" if none_ok else ""
     if isinstance(value, bool):
-        raise ValueError(   # noqa: TRY004
+        raise ValueError(  # noqa: TRY004
             f"{name} must be an int >= 1{suffix}, not a bool; got {value!r}."
         )
     try:
