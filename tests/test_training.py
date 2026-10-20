@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import math
 
+import numpy as np
 import pytest
 import torch
 import torch.nn as nn
@@ -385,6 +386,45 @@ class TestValidation:
                 Xv,
                 yv,
                 **kwargs,
+            )
+
+    def test_numpy_integer_arguments_are_accepted(self, data: tuple[torch.Tensor, ...]) -> None:
+        X, y, Xv, yv = data
+        model = _logreg()
+        history = train_model(
+            model,
+            nn.BCEWithLogitsLoss(),
+            torch.optim.SGD(model.parameters(), lr=0.1),
+            X,
+            y,
+            Xv,
+            yv,
+            max_epochs=np.int64(1),
+            batch_size=np.int64(4),
+            patience=np.int64(2),
+        )
+
+        assert type(history.stopped_early) is bool
+
+    @pytest.mark.parametrize("name", ["max_epochs", "batch_size", "patience"])
+    def test_tensor_count_arguments_are_rejected(
+        self,
+        name: str,
+        data: tuple[torch.Tensor, ...],
+    ) -> None:
+        X, y, Xv, yv = data
+        model = _logreg()
+
+        with pytest.raises(ValueError, match=name):
+            train_model(
+                model,
+                nn.BCEWithLogitsLoss(),
+                torch.optim.SGD(model.parameters(), lr=0.1),
+                X,
+                y,
+                Xv,
+                yv,
+                **{name: torch.tensor(3)},
             )
 
     def test_val_pair_must_be_complete(self, data: tuple[torch.Tensor, ...]) -> None:

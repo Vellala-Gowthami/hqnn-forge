@@ -35,10 +35,10 @@ import copy
 import functools
 import itertools
 import math
-import operator
+import numbers
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import SupportsIndex, cast
+from typing import Literal, cast, overload
 
 import torch
 import torch.nn as nn
@@ -168,26 +168,39 @@ def _check_pair(x: torch.Tensor, y: torch.Tensor, name: str) -> None:
         raise ValueError(f"X_{name} is empty.")
 
 
-def _check_count(name: str, value: object, *, none_ok: bool = False) -> None:
-    """Raise ``ValueError`` unless ``value`` is an ``int`` >= 1 (or ``None`` if allowed).
+@overload
+def _check_count(name: str, value: object, *, none_ok: Literal[False] = ...) -> int: ...
 
-    ``bool`` is refused although it is an ``int``, and so are NaN and floats,
-    integer-valued ones such as ``10.0`` included.  Anything with ``__index__``
-    (NumPy integers) is accepted.
+
+@overload
+def _check_count(name: str, value: object, *, none_ok: Literal[True]) -> int | None: ...
+
+
+def _check_count(name: str, value: object, *, none_ok: bool = False) -> int | None:
+    """Validate a positive integer, optionally allowing None.
+
+    NumPy integers are accepted. Booleans, floats (including integer-valued
+    floats), tensors, and other non-integer values raise ValueError.
     """
     if value is None and none_ok:
-        return
+        return None
+
     suffix = " or None" if none_ok else ""
+
     if isinstance(value, bool):
         raise ValueError(  # noqa: TRY004
             f"{name} must be an int >= 1{suffix}, not a bool; got {value!r}."
         )
-    try:
-        count = operator.index(cast(SupportsIndex, value))
-    except TypeError:
-        raise ValueError(f"{name} must be an int >= 1{suffix}; got {value!r}.") from None
-    if count < 1:
+
+    if not isinstance(value, numbers.Integral):
+        raise ValueError(  # noqa: TRY004
+            f"{name} must be an int >= 1{suffix}; got {value!r}."
+        )
+
+    if value < 1:
         raise ValueError(f"{name} must be >= 1{suffix}; got {value!r}.")
+
+    return int(value)
 
 
 def train_model(
@@ -244,7 +257,8 @@ def train_model(
         ``monitor``, ``patience`` and ``restore_best`` have no effect.
     max_epochs:
         Upper bound on the number of epochs. Must be an integer >= 1;
-        booleans and floats, including whole-valued floats, are rejected.
+        booleans and floats, including whole-valued floats, are rejected
+        with ``ValueError``. NumPy integers are accepted.
         Default: 100.
     batch_size:
         Mini-batch size: an integer >= 1. Booleans and floats, including
@@ -291,9 +305,9 @@ def train_model(
         raise ValueError(
             f"unknown monitor {monitor!r}; choose 'val_loss' or one of {sorted(METRICS)}."
         )
-    _check_count("max_epochs", max_epochs)
-    _check_count("batch_size", batch_size)
-    _check_count("patience", patience, none_ok=True)
+    max_epochs = _check_count("max_epochs", max_epochs)
+    batch_size = _check_count("batch_size", batch_size)
+    patience = _check_count("patience", patience, none_ok=True)
     if (X_val is None) != (y_val is None):
         raise ValueError("pass both X_val and y_val, or neither.")
 
