@@ -399,12 +399,12 @@ class TestValidation:
             y,
             Xv,
             yv,
-            max_epochs=np.int64(1),
+            max_epochs=np.int64(50),
             batch_size=np.int64(4),
-            patience=np.int64(2),
+            patience=np.int64(1),
         )
 
-        assert type(history.stopped_early) is bool
+        assert history.stopped_early is True
 
     @pytest.mark.parametrize("name", ["max_epochs", "batch_size", "patience"])
     def test_tensor_count_arguments_are_rejected(
