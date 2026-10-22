@@ -179,7 +179,7 @@ def _check_count(name: str, value: object, *, none_ok: Literal[True]) -> int | N
 def _check_count(name: str, value: object, *, none_ok: bool = False) -> int | None:
     """Validate a positive integer, optionally allowing None.
 
-    NumPy integers are accepted. Booleans, floats (including integer-valued
+    NumPy integers are accepted.  Booleans, floats (including integer-valued
     floats), tensors, and other non-integer values raise ValueError.
     """
     if value is None and none_ok:
@@ -256,27 +256,27 @@ def train_model(
         Validation split.  Without it the loop runs ``max_epochs`` epochs and
         ``monitor``, ``patience`` and ``restore_best`` have no effect.
     max_epochs:
-        Upper bound on the number of epochs. Must be an integer >= 1;
+        Upper bound on the number of epochs.  Must be an integer >= 1;
         booleans and floats, including whole-valued floats, are rejected
         with ``ValueError``. NumPy integers are accepted.
         Default: 100.
     batch_size:
-        Mini-batch size: an integer >= 1. Booleans and floats, including
+        Mini-batch size: an integer >= 1.  Booleans and floats, including
         whole-valued floats such as ``8.0``, are rejected with ``ValueError``;
-        NumPy integers are accepted. The last batch may be smaller, but for
+        NumPy integers are accepted.  The last batch may be smaller, but for
         ``batch_size > 1`` never a single sample unless the training set is
         one: a remainder of one is merged into the batch before it, which then
         holds ``batch_size + 1``, because batch norm in train mode fails on one
-        sample. With ``batch_size=1`` every batch is one sample, as asked.
+        sample.  With ``batch_size=1`` every batch is one sample, as asked.
         Default: 256.
     monitor:
         ``"mcc"`` (default), ``"f1"``, ``"balanced_accuracy"`` or ``"val_loss"``.
     patience:
         Stop after this many consecutive epochs without an improvement larger
-        than ``min_delta``. Must be an integer >= 1 or ``None`` to disable
-        early stopping. Booleans and floats, including whole-valued floats
+        than ``min_delta``.  Must be an integer >= 1 or ``None`` to disable
+        early stopping.  Booleans and floats, including whole-valued floats
         such as ``5.0``, are rejected with ``ValueError``; NumPy integers
-        are accepted. Default: 10.
+        are accepted.  Default: 10.
     min_delta:
         Minimum change that counts as an improvement.  Default: 0.0.
     restore_best:
