@@ -399,9 +399,9 @@ class TestValidation:
             y,
             Xv,
             yv,
-            max_epochs=np.int64(50),
-            batch_size=np.int64(4),
-            patience=np.int64(1),
+            max_epochs=np.int64(50),  # type: ignore[arg-type]
+            batch_size=np.int64(4),  # type: ignore[arg-type]
+            patience=np.int64(1),  # type: ignore[arg-type]
         )
 
         assert history.stopped_early is True
@@ -424,7 +424,7 @@ class TestValidation:
                 y,
                 Xv,
                 yv,
-                **{name: torch.tensor(3)},
+                **{name: torch.tensor(3)},  # type: ignore[arg-type]
             )
 
     def test_val_pair_must_be_complete(self, data: tuple[torch.Tensor, ...]) -> None:
